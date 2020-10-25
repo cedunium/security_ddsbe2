@@ -16,7 +16,18 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
-
+//unsecure routes
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/users',['uses' => 'UserController@getUsers']);
 });
+
+// more simple routes
+$router->get('/users', 'UserController@index');   // shows all the present data
+$router->post('/users', 'UserController@addUser');  // add new user to the database
+$router->get('/users/{id}', 'UserController@show'); // locating the user using the id
+$router->put('/users/{id}', 'UserController@update'); // update user record all values
+$router->patch('/users/{id}', 'UserController@update'); // update the user's data specific part 
+$router->delete('/users/{id}', 'UserController@delete'); // delete data
+
+$router->get('login', 'UserController@showlogin');      //this is in the login page
+$router ->post('validate', 'UserController@result');     //coonfigured to the login button
