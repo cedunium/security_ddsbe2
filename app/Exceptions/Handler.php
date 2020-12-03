@@ -56,45 +56,39 @@ class Handler extends ExceptionHandler
     {
         // return parent::render($request, $exception);
 
-        //http not found
+        // http not found, from the API responser
         if($exception instanceof HttpException) {
             $code = $exception->getStatusCode();
             $message = Response::$statusTexts[$code];
-
             return $this->errorResponse($message, $code);
         }
 
-        // instance not found , when user is not found
+        // instance not found, when the user is not found
         if($exception instanceof ModelNotFoundException){
             $model = strtolower(class_basename($exception->getModel()));
-
             return $this->errorResponse("Does not exist any instance of {$model} with the given id",Response::HTTP_NOT_FOUND);
         }
 
-        // validation exception
+        // validation exception, when it is not validated
         if($exception instanceof ValidationException){
             $errors = $exception->validator->errors()->getMessages();
-
             return $this->errorResponse($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        // access to forbidden
+        // access to forbidden, when it is not accessable
         if($exception instanceof AuthorizationException){
             return $this->errorResponse($exception->getMessage(), Response::HTTP_FORBIDDEN);
         }
         
-        // unauthorized access
+        // unauthorized access, when it is not permitted to access
         if($exception instanceof AuthenticationException){
             return $this->errorResponse($exception->getMessage(), Response::HTTP_UNAUTHORIZED);
         }
 
-        // if running in development environment
+        // if running in development environment, when there is an request or exception
         if(env('APP_DEBUG',false)) {
             return parent::render($request,$exception);
         }
-        
         return $this->errorResponse('Unexpected error. Try later', Response::HTTP_INTERNAL_SERVER_ERROR);
-
-        // 
     }
 }
