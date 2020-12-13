@@ -63,13 +63,13 @@ class Handler extends ExceptionHandler
             return $this->errorResponse($message, $code);
         }
 
-        // instance not found, when the user is not found
+        // instance not found, when the user is not found 
         if($exception instanceof ModelNotFoundException){
             $model = strtolower(class_basename($exception->getModel()));
-            return $this->errorResponse("Does not exist any instance of {$model} with the given id",Response::HTTP_NOT_FOUND);
+            return $this->errorResponse("Does not exist any instance of {$model} with the given id",Response::HTTP_NOT_FOUND); 
         }
 
-        // validation exception, when it is not validated
+        // validation exception, when it is not validated  
         if($exception instanceof ValidationException){
             $errors = $exception->validator->errors()->getMessages();
             return $this->errorResponse($errors, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -88,6 +88,13 @@ class Handler extends ExceptionHandler
         // if running in development environment, when there is an request or exception
         if(env('APP_DEBUG',false)) {
             return parent::render($request,$exception);
+        }
+        
+        // client exception
+        if ($exception instanceof ClientException) {
+            $message = $exception->getResponse()>getBody();
+            $code = $exception->getCode();
+            return $this->errorMessage($message,200);
         }
         return $this->errorResponse('Unexpected error. Try later', Response::HTTP_INTERNAL_SERVER_ERROR);
     }

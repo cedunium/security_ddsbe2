@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 //use App\User;
 use App\Models\User;    //the model
+use App\Models\UserJob; 
 use Illuminate\Http\Response;
 use App\Traits\ApiResponser;    //standardized our code for api response
 use Illuminate\Http\Request;    //handling http request in lumen
@@ -60,9 +61,11 @@ Class UserController extends Controller {
         $rules = [
             'username' => 'required|max:20',
             'password' => 'required|max:20',
+            'jobid' => 'required|numeric|min:1|not_in:0',
         ];
 
         $this->validate($request,$rules);
+        $userjob = UserJob::findOrFail($request->jobid); // validate if Jobid is found in the table tbluserjob
         $user = User::create($request->all()); //the data that will fill in the users fillable
         return $this->successResponse($user, Response::HTTP_CREATED);
     }
@@ -90,13 +93,14 @@ Class UserController extends Controller {
         $rules = [
         'username' => 'max:20',
         'password' => 'max:20',
+        'jobid' => 'required|numeric|min:1|not_in:0',
         ];
 
         $this->validate($request, $rules);
 
         // eloquent style
         // $user = User::findOrFail($id);
-
+        $userjob =UserJob::findOrFail($request->jobid); // validate if Jobid is found in the table tbluserjob
         $user = User::where('id',$id)->first();
         if($user){
             $user->fill($request->all());

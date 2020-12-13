@@ -16,7 +16,7 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
-//unsecure routes
+// unsecure routes
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/users',['uses' => 'UserController@getUsers']);
 });
@@ -29,5 +29,8 @@ $router->put('/users/{id}', 'UserController@update'); // update user record all 
 $router->patch('/users/{id}', 'UserController@update'); // update the user's data specific part 
 $router->delete('/users/{id}', 'UserController@delete'); // delete data
 
-$router->get('login', 'UserController@showlogin');      //this is in the login page
-$router ->post('validate', 'UserController@result');     //coonfigured to the login button
+$router->get('/usersjob','UserJobController@index'); // shows all the users job
+$router->get('/usersjob/{id}','UserJobController@show'); // get users job by id
+
+//$router->get('login', 'UserController@showlogin'); // this is in the login page
+//$router ->post('validate', 'UserController@result'); // configured to the login button
